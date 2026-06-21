@@ -1,0 +1,24 @@
+[package]
+name = "vgbe"
+version = "0.1.0"
+edition = "2024"
+autobins = false
+build = "build.rs"
+
+[features]
+default = ["sdl", "native-apu"]
+native-apu = []
+sdl = ["dep:sdl2"]
+
+[[bin]]
+name = "vgbe"
+path = "src/bin/vgbe.rs"
+required-features = ["sdl"]
+
+[dependencies]
+log = "0.4"
+env_logger = "0.11"
+sdl2 = { version = "0.36", features = ["ttf"], optional = true }
+
+[build-dependencies]
+cc = "1"
