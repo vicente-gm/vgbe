@@ -4,6 +4,13 @@
 
 VGBE is a Game Boy emulator written in Rust as a final grade project. It includes a native SDL frontend, normal and debug execution modes, keyboard controls, TAS input playback, and native audio support through the included APU integration.
 
+## Cloning VGBE
+
+VGBE uses an external library for the audio subsystem, and the git repository is added as a submodule. To clone this repository with the audio library use:
+```bash
+git clone --recursive <repo-url>
+```
+
 ## User Manual
 
 ### Compile The Emulator
