@@ -29,21 +29,38 @@ use vgbe::tas::{TasKey, parse_tas_file};
 
 #[test]
 fn test_parse_tas_file_format() {
-    let events = parse_tas_file("0 w 1\n12 k 0\n").unwrap();
+    let events = parse_tas_file(
+        "0 Up 1\n12 LEFT 0\n24 down 1\n36 rIgHt 0\n48 a 1\n60 B 0\n72 START 1\n84 select 0\n",
+    )
+    .unwrap();
 
-    assert_eq!(events.len(), 2);
+    assert_eq!(events.len(), 8);
     assert_eq!(events[0].cycle, 0);
     assert_eq!(events[0].key, TasKey::W);
     assert!(events[0].pressed);
     assert_eq!(events[1].cycle, 12);
-    assert_eq!(events[1].key, TasKey::K);
+    assert_eq!(events[1].key, TasKey::A);
     assert!(!events[1].pressed);
+    assert_eq!(events[2].cycle, 24);
+    assert_eq!(events[2].key, TasKey::S);
+    assert!(events[2].pressed);
+    assert_eq!(events[3].key, TasKey::D);
+    assert_eq!(events[4].key, TasKey::K);
+    assert_eq!(events[5].key, TasKey::L);
+    assert_eq!(events[6].key, TasKey::I);
+    assert_eq!(events[7].key, TasKey::O);
+}
+
+#[test]
+fn test_tas_file_rejects_old_keyboard_direction_names() {
+    assert!(parse_tas_file("0 w 1\n").is_err());
+    assert!(parse_tas_file("0 k 1\n").is_err());
 }
 
 #[test]
 fn test_gameboy_tas_file_updates_joypad_at_cpu_cycles() {
     let tas_path = std::env::temp_dir().join(format!("vgbe-tas-{}.txt", std::process::id()));
-    fs::write(&tas_path, "0 k 1\n2 k 0\n").unwrap();
+    fs::write(&tas_path, "0 a 1\n2 a 0\n").unwrap();
 
     let memory = Rc::new(RefCell::new(MemoryBus::init_mem_void()));
     let mut gameboy = GameBoy::new(Rc::clone(&memory));

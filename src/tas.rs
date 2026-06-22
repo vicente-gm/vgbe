@@ -40,16 +40,16 @@ impl FromStr for TasKey {
     type Err = String;
 
     fn from_str(value: &str) -> Result<Self, Self::Err> {
-        match value {
-            "w" => Ok(TasKey::W),
-            "a" => Ok(TasKey::A),
-            "s" => Ok(TasKey::S),
-            "d" => Ok(TasKey::D),
-            "k" => Ok(TasKey::K),
-            "l" => Ok(TasKey::L),
-            "i" => Ok(TasKey::I),
-            "o" => Ok(TasKey::O),
-            _ => Err(format!("invalid TAS key `{value}`")),
+        match value.to_ascii_lowercase().as_str() {
+            "up" => Ok(TasKey::W),
+            "left" => Ok(TasKey::A),
+            "down" => Ok(TasKey::S),
+            "right" => Ok(TasKey::D),
+            "a" => Ok(TasKey::K),
+            "b" => Ok(TasKey::L),
+            "start" => Ok(TasKey::I),
+            "select" => Ok(TasKey::O),
+            _ => Err(format!("invalid TAS button `{value}`")),
         }
     }
 }
@@ -165,7 +165,7 @@ pub fn parse_tas_file(contents: &str) -> Result<Vec<TasEvent>, TasLoadError> {
 
         let parts: Vec<&str> = line.split_whitespace().collect();
         if parts.len() != 3 {
-            return Err(parse_error(line_number, "expected: <cycle> <key> <0|1>"));
+            return Err(parse_error(line_number, "expected: <cycle> <button> <0|1>"));
         }
 
         let cycle = parts[0]

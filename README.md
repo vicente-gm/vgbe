@@ -44,7 +44,7 @@ target/release/vgbe
 ### Command Line Options
 
 ```text
-vgbe <rom> [--debug=true|false] [--tas=<file>]
+cargo run --release -- <rom> [--debug=true|false] [--tas=<file>]
 ```
 
 - `<rom>` is the path to the Game Boy ROM to execute.
@@ -78,7 +78,7 @@ Normal mode shows only the emulated Game Boy screen and status bar. It is the re
 Start directly in normal mode with:
 
 ```bash
-vgbe <rom> --debug=false [--tas=<file>]
+cargo run --release -- <rom> --debug=false [--tas=<file>]
 ```
 
 ![Normal mode screenshot](docs/screenshots/normal.png)
@@ -90,13 +90,13 @@ Debug mode shows the Game Boy screen together with emulator inspection panels. I
 Debug mode is the default startup mode:
 
 ```bash
-vgbe <rom>
+cargo run --release -- <rom>
 ```
 
 It can also be selected explicitly:
 
 ```bash
-vgbe <rom> --debug=true [--tas=<file>]
+cargo run --release -- <rom> --debug=true [--tas=<file>]
 ```
 
 ![Debug mode screenshot](docs/screenshots/debug.png)
@@ -134,23 +134,37 @@ Press `F1` at any time to switch between normal mode and debug mode.
 A TAS file is a plain text file. Each non-empty line defines one input event with this format:
 
 ```text
-<cycle> <key> <0|1>
+<cycle> <button> <0|1>
 ```
 
 - `<cycle>` is the emulator CPU cycle/M-cycle where the event is applied.
-- `<key>` is one of `w`, `a`, `s`, `d`, `k`, `l`, `i`, or `o`.
-- `1` means the key is pressed.
-- `0` means the key is released.
+- `<button>` is one of `up`, `left`, `down`, `right`, `a`, `b`, `start`, or `select`.
+- Button names are not case-sensitive, so `up`, `UP`, `Up`, and `uP` are equivalent.
+- `1` means the button is pressed.
+- `0` means the button is released.
+
+Button mapping:
+
+| TAS button | Game Boy button |
+| --- | --- |
+| `up` | D-pad Up |
+| `left` | D-pad Left |
+| `down` | D-pad Down |
+| `right` | D-pad Right |
+| `a` | A |
+| `b` | B |
+| `start` | Start |
+| `select` | Select |
 
 Example:
 
 ```text
-100 w 1
-140 w 0
-200 k 1
-260 k 0
-500 i 1
-540 i 0
+100 up 1
+140 up 0
+200 a 1
+260 a 0
+500 start 1
+540 start 0
 ```
 
 This example presses Up at cycle `100`, releases it at cycle `140`, presses A at cycle `200`, releases it at cycle `260`, presses Start at cycle `500`, and releases it at cycle `540`.
